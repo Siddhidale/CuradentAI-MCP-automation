@@ -1326,7 +1326,12 @@ test.describe('Logout Flow', () => {
 
 });
 
-test('CURADENTAI-2634: Successful password change', async ({ page }) => {
+}); // End of Change Password describe block
+
+// These tests must run serially as 2635 depends on 2634 changing the password
+test.describe.serial('Password Change Flow', () => {
+
+  test('CURADENTAI-2634: Successful password change', async ({ page }) => {
     /**
      * Description: Verify password change success
      * Preconditions: Valid old & new passwords
@@ -1366,16 +1371,14 @@ test('CURADENTAI-2634: Successful password change', async ({ page }) => {
     const changePasswordButton = page.getByRole('button', { name: 'Change Password' });
     await changePasswordButton.click();
 
-    // Verify success toaster
-    await expect(page.getByText(/success|changed|updated/i)).toBeVisible({ timeout: 10000 });
+    // Verify success toaster - wait for specific success message
+    await expect(page.getByText(/password.*changed|password.*updated|successfully/i)).toBeVisible({ timeout: 10000 });
 
     // Wait for password change to be processed
     await page.waitForTimeout(2000);
   });
 
-});
-
-test('CURADENTAI-2635: Login with new password', async ({ page }) => {
+  test('CURADENTAI-2635: Login with new password', async ({ page }) => {
     /**
      * Description: Verify login works after password change (depends on 2634)
      * Preconditions: Test 2634 has changed password from Test@123 to NewPassword@123
@@ -1490,3 +1493,5 @@ test('CURADENTAI-2635: Login with new password', async ({ page }) => {
     await expect(page.getByText(/success|changed|updated/i)).toBeVisible({ timeout: 10000 });
     console.log('Password reset back to original TEST_PASSWORD');
   });
+
+}); // End of Password Change Flow serial describe block
