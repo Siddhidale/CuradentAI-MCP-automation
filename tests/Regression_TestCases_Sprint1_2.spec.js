@@ -11,8 +11,8 @@ const BASE_URL = process.env.BASE_URL || 'https://qa-app.curadent.ai';
 
 // Test credentials - should be configured in .env file
 const TEST_EMAIL = process.env.TEST_EMAIL || 'siddhi.dale@mindbowser.com';
-const TEST_PASSWORD = process.env.TEST_PASSWORD || 'Test@123';
-const NEW_TEST_PASSWORD = process.env.NEW_TEST_PASSWORD || 'NewTest@456';
+const TEST_PASSWORD = process.env.TEST_PASSWORD || 'Tanvidale@123';
+const NEW_TEST_PASSWORD = process.env.NEW_TEST_PASSWORD || 'Tanvidale@1234';
 
 // Helper function to login
 async function login(page) {
@@ -87,6 +87,7 @@ test.describe('Sign In - Authentication', () => {
     await expect(page.locator('input[name="username"]')).toBeVisible();
     await expect(page.locator('input[name="password"]')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Sign In' })).toBeVisible();
+    console.log('CURADENTAI-2608: Launch Sign In Page - COMPLETED');
   });
 
   test('CURADENTAI-2609: Login with valid credentials', async ({ page }) => {
@@ -110,6 +111,7 @@ test.describe('Sign In - Authentication', () => {
 
     // Verify user is redirected to dashboard (not on login page)
     await expect(page).not.toHaveURL(/\/login$/);
+    console.log('CURADENTAI-2609: Login with valid credentials - COMPLETED');
   });
 
   test('CURADENTAI-2610: Login with invalid credentials', async ({ page }) => {
@@ -133,6 +135,7 @@ test.describe('Sign In - Authentication', () => {
 
     // Verify error message is displayed
     await expect(page.getByText(/invalid|incorrect|error|failed/i)).toBeVisible({ timeout: 5000 });
+    console.log('CURADENTAI-2610: Login with invalid credentials - COMPLETED');
   });
 
 });
@@ -156,6 +159,7 @@ test.describe('Dashboard', () => {
     // Verify dashboard elements are visible
     const dashboardContent = page.locator('main, .dashboard, [data-testid="dashboard"]');
     await expect(dashboardContent.first()).toBeVisible({ timeout: 10000 });
+    console.log('CURADENTAI-2613: Dashboard load - COMPLETED');
   });
 
   test('CURADENTAI-2614: Patient list visible', async ({ page }) => {
@@ -178,6 +182,7 @@ test.describe('Dashboard', () => {
       // Verify patient table/list is visible
     const patientTable = page.locator('table, [data-testid="patient-list"], .patient-list');
     await expect(patientTable.first()).toBeVisible({ timeout: 5000 });
+    console.log('CURADENTAI-2614: Patient list visible - COMPLETED');
   });
 });
 
@@ -212,6 +217,7 @@ test.describe('Patient Search', () => {
       const count = await patientRows.count();
       expect(count).toBeGreaterThanOrEqual(0); // Results may or may not exist
     }
+    console.log('CURADENTAI-2615: Search patient by full name - COMPLETED');
   });
 
   test('CURADENTAI-2616: Search patient by partial name', async ({ page }) => {
@@ -241,6 +247,7 @@ test.describe('Patient Search', () => {
       const count = await patientRows.count();
       expect(count).toBeGreaterThanOrEqual(0);
     }
+    console.log('CURADENTAI-2616: Search patient by partial name - COMPLETED');
   });
 
   test('CURADENTAI-2617: Search non-existing patient', async ({ page }) => {
@@ -265,6 +272,7 @@ test.describe('Patient Search', () => {
       ]);
       expect(either).not.toBeNull();
     }
+    console.log('CURADENTAI-2617: Search non-existing patient - COMPLETED');
   });
 
 });
@@ -294,6 +302,7 @@ test.describe('Add Patient', () => {
       const modal = page.locator('[role="dialog"], .modal, [data-testid="add-patient-modal"]');
       await expect(modal.first()).toBeVisible({ timeout: 5000 });
     }
+    console.log('CURADENTAI-2618: Open Add Patient popup - COMPLETED');
   });
 
   test('CURADENTAI-2619: Add Patient mandatory validation', async ({ page }) => {
@@ -328,6 +337,7 @@ test.describe('Add Patient', () => {
 
     // Assertion: Button should be disabled when mandatory fields are empty
     await expect(savePatientButton).toBeDisabled();
+    console.log('CURADENTAI-2619: Add Patient mandatory validation - COMPLETED');
   });
 
   test('CURADENTAI-2620: Add Patient with valid data', async ({ page }) => {
@@ -396,6 +406,7 @@ test.describe('Add Patient', () => {
       // If button is still disabled, just verify form loaded correctly
       await expect(savePatientButton).toBeVisible();
     }
+    console.log('CURADENTAI-2620: Add Patient with valid data - COMPLETED');
   });
 
   test('CURADENTAI-2621: Add Patient phone validation', async ({ page }) => {
@@ -429,6 +440,7 @@ test.describe('Add Patient', () => {
         await expect(page.getByText(/valid phone|numeric|invalid phone|phone number/i)).toBeVisible({ timeout: 5000 });
       }
     }
+    console.log('CURADENTAI-2621: Add Patient phone validation - COMPLETED');
   });
 
   test('CURADENTAI-2622: DOB future date validation', async ({ page }) => {
@@ -468,6 +480,7 @@ test.describe('Add Patient', () => {
         await expect(page.getByText(/future|date of birth must be a past date|invalid date|cannot be|birth date/i)).toBeVisible({ timeout: 5000 });
       }
     }
+    console.log('CURADENTAI-2622: DOB future date validation - COMPLETED');
   });
 
   test('CURADENTAI-2623: Save & Send Medical History', async ({ page }) => {
@@ -539,6 +552,7 @@ test.describe('Add Patient', () => {
       // If button is still disabled, just verify form loaded correctly
       await expect(saveAndSendButton).toBeVisible();
     }
+    console.log('CURADENTAI-2623: Save & Send Medical History - COMPLETED');
   });
 
   test('CURADENTAI-2624: Patient searchable after add', async ({ page }) => {
@@ -548,6 +562,9 @@ test.describe('Add Patient', () => {
   const addPatientButton = page.getByRole('button', { name: /add patient/i }).first();
   await expect(addPatientButton).toBeVisible({ timeout: 5000 });
   await addPatientButton.click();
+
+  // Wait for modal to fully load
+  await page.waitForTimeout(1000);
 
   // Generate unique patient details for each test run
   const uniqueId = Date.now().toString().slice(-6);
@@ -562,31 +579,57 @@ test.describe('Add Patient', () => {
   await page.getByPlaceholder(/enter last name/i).fill(lastName);
   await page.getByPlaceholder(/enter email address/i).fill(email);
 
-  // Location
-  const locationDropdown = page
-    .locator(
-      'button:has-text("Select Location"), [data-testid="location"], select[name="location"]'
-    )
-    .first();
-
-  if (await locationDropdown.isVisible().catch(() => false)) {
+  // Location - try different locator strategies
+  const locationDropdown = page.locator('button:has-text("Select Location"), [data-testid="location"], select[name="location"]').first();
+  if (await locationDropdown.isVisible({ timeout: 3000 }).catch(() => false)) {
     await locationDropdown.click();
-    await page.getByRole('option').first().click();
+    await page.waitForTimeout(500);
+    const firstOption = page.getByRole('option').first();
+    if (await firstOption.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await firstOption.click();
+    }
   }
 
-  // DOB - select a random day from the calendar
+  // DOB - select a past date using native select dropdowns
   const dobInput = page.getByPlaceholder(/select dob|date of birth/i).first();
-  if (await dobInput.isVisible().catch(() => false)) {
+  if (await dobInput.isVisible({ timeout: 3000 }).catch(() => false)) {
     await dobInput.click();
-    // Select a random day between 10-20 to avoid edge cases
-    const dayToSelect = Math.floor(Math.random() * 11) + 10;
-    await page.getByRole('gridcell', { name: String(dayToSelect) }).first().click();
+    await page.waitForTimeout(500);
+
+    // Step 1: Select year from native <select> dropdown (class: rdp-years_dropdown)
+    const yearSelect = page.locator('select.rdp-years_dropdown');
+    if (await yearSelect.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await yearSelect.selectOption('1998');
+      await page.waitForTimeout(300);
+    }
+
+    // Step 2: Select month from native <select> dropdown (class: rdp-months_dropdown)
+    // Values are 0-indexed: Jan=0, Feb=1, ..., Sep=8, etc.
+    const monthSelect = page.locator('select.rdp-months_dropdown');
+    if (await monthSelect.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await monthSelect.selectOption('8'); // September
+      await page.waitForTimeout(300);
+    }
+
+    // Step 3: Select day 15 - try multiple selectors
+    await page.waitForTimeout(300);
+    // Try button with day number first (common in date pickers)
+    const dayButton = page.locator('button').filter({ hasText: /^15$/ }).first();
+    if (await dayButton.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await dayButton.click();
+    } else {
+      // Fallback to gridcell
+      const dateCell = page.getByRole('gridcell', { name: '15' }).first();
+      if (await dateCell.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await dateCell.click();
+      }
+    }
   }
 
   // Phone - generate unique phone number
   const phoneNumber = `98${Math.floor(Math.random() * 100000000).toString().padStart(8, '0')}`;
   const phoneInput = page.getByPlaceholder(/enter phone number|phone/i).first();
-  if (await phoneInput.isVisible().catch(() => false)) {
+  if (await phoneInput.isVisible({ timeout: 3000 }).catch(() => false)) {
     await phoneInput.fill(phoneNumber);
   }
 
@@ -595,7 +638,7 @@ test.describe('Add Patient', () => {
     name: /save patient|send medical history form/i,
   }).first();
 
-  await expect(savePatientButton).toBeEnabled();
+  await expect(savePatientButton).toBeEnabled({ timeout: 5000 });
   await savePatientButton.click();
 
   // Wait for success dialog/toast to appear
@@ -651,6 +694,7 @@ test.describe('Add Patient', () => {
   // Verify patient details page opens
   await page.waitForLoadState('domcontentloaded');
   await expect(page.locator('main, [data-testid="patient-details"], .patient-details')).toBeVisible({ timeout: 5000 });
+  console.log('CURADENTAI-2624: Patient searchable after add - COMPLETED');
 });
 
 });
@@ -674,6 +718,9 @@ test.describe('Patient Details', () => {
     await expect(addPatientButton).toBeVisible({ timeout: 5000 });
     await addPatientButton.click();
 
+    // Wait for modal to fully load
+    await page.waitForTimeout(1000);
+
     // Generate unique patient details for each test run
     const uniqueId = Date.now().toString().slice(-6);
     const firstNames = ['Michael', 'Sarah', 'David', 'Emily', 'Daniel', 'Jessica', 'Matthew', 'Ashley', 'Andrew', 'Amanda'];
@@ -687,28 +734,57 @@ test.describe('Patient Details', () => {
     await page.getByPlaceholder(/enter last name/i).fill(lastName);
     await page.getByPlaceholder(/enter email address/i).fill(email);
 
-    // Location
-    const locationDropdown = page
-      .locator('button:has-text("Select Location"), [data-testid="location"], select[name="location"]')
-      .first();
-
-    if (await locationDropdown.isVisible().catch(() => false)) {
+    // Location - try different locator strategies
+    const locationDropdown = page.locator('button:has-text("Select Location"), [data-testid="location"], select[name="location"]').first();
+    if (await locationDropdown.isVisible({ timeout: 3000 }).catch(() => false)) {
       await locationDropdown.click();
-      await page.getByRole('option').first().click();
+      await page.waitForTimeout(500);
+      const firstOption = page.getByRole('option').first();
+      if (await firstOption.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await firstOption.click();
+      }
     }
 
-    // DOB - select a random day from the calendar
+    // DOB - select a past date using native select dropdowns
     const dobInput = page.getByPlaceholder(/select dob|date of birth/i).first();
-    if (await dobInput.isVisible().catch(() => false)) {
+    if (await dobInput.isVisible({ timeout: 3000 }).catch(() => false)) {
       await dobInput.click();
-      const dayToSelect = Math.floor(Math.random() * 11) + 10;
-      await page.getByRole('gridcell', { name: String(dayToSelect) }).first().click();
+      await page.waitForTimeout(500);
+
+      // Step 1: Select year from native <select> dropdown (class: rdp-years_dropdown)
+      const yearSelect = page.locator('select.rdp-years_dropdown');
+      if (await yearSelect.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await yearSelect.selectOption('1998');
+        await page.waitForTimeout(300);
+      }
+
+      // Step 2: Select month from native <select> dropdown (class: rdp-months_dropdown)
+      // Values are 0-indexed: Jan=0, Feb=1, ..., Sep=8, etc.
+      const monthSelect = page.locator('select.rdp-months_dropdown');
+      if (await monthSelect.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await monthSelect.selectOption('8'); // September
+        await page.waitForTimeout(300);
+      }
+
+      // Step 3: Select day 15 - try multiple selectors
+      await page.waitForTimeout(300);
+      // Try button with day number first (common in date pickers)
+      const dayButton = page.locator('button').filter({ hasText: /^15$/ }).first();
+      if (await dayButton.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await dayButton.click();
+      } else {
+        // Fallback to gridcell
+        const dateCell = page.getByRole('gridcell', { name: '15' }).first();
+        if (await dateCell.isVisible({ timeout: 2000 }).catch(() => false)) {
+          await dateCell.click();
+        }
+      }
     }
 
     // Phone - generate unique phone number
     const phoneNumber = `98${Math.floor(Math.random() * 100000000).toString().padStart(8, '0')}`;
     const phoneInput = page.getByPlaceholder(/enter phone number|phone/i).first();
-    if (await phoneInput.isVisible().catch(() => false)) {
+    if (await phoneInput.isVisible({ timeout: 3000 }).catch(() => false)) {
       await phoneInput.fill(phoneNumber);
     }
 
@@ -717,7 +793,7 @@ test.describe('Patient Details', () => {
       name: /save patient|send medical history form/i,
     }).first();
 
-    await expect(savePatientButton).toBeEnabled();
+    await expect(savePatientButton).toBeEnabled({ timeout: 5000 });
     await savePatientButton.click();
 
     // Wait for success dialog/toast to appear
@@ -775,6 +851,7 @@ test.describe('Patient Details', () => {
     // Verify patient name is visible on the details page
     const patientName = page.getByText(new RegExp(`${firstName}\\s+${lastName}`, 'i')).first();
     await expect(patientName).toBeVisible({ timeout: 5000 });
+    console.log('CURADENTAI-2625: Patient details page - COMPLETED');
   });
 
   test('CURADENTAI-2626: Patient details dropdown', async ({ page }) => {
@@ -812,6 +889,7 @@ test.describe('Patient Details', () => {
         expect(typeof isVisible).toBe('boolean');
       }
     }
+    console.log('CURADENTAI-2626: Patient details dropdown - COMPLETED');
   });
 
 });
@@ -840,6 +918,7 @@ test.describe('User Profile', () => {
       const profilePage = page.locator('[data-testid="profile"], .profile-page, form');
       await expect(profilePage.first()).toBeVisible({ timeout: 5000 });
     }
+    console.log('CURADENTAI-2627: User Profile page load - COMPLETED');
   });
 
   test('CURADENTAI-2628: Update user profile', async ({ page }) => {
@@ -879,6 +958,7 @@ test.describe('User Profile', () => {
         }
       }
     }
+    console.log('CURADENTAI-2628: Update user profile - COMPLETED');
   });
 
     test('CURADENTAI-2629: Save disabled without changes', async ({ page }) => {
@@ -905,6 +985,7 @@ test.describe('User Profile', () => {
         expect(isDisabled).toBe(true);
       }
     }
+    console.log('CURADENTAI-2629: Save disabled without changes - COMPLETED');
   });
 
   test('CURADENTAI-2630: Designation dropdown save', async ({ page }) => {
@@ -944,6 +1025,7 @@ test.describe('User Profile', () => {
         expect(selectedValue).toBeTruthy();
       }
     }
+    console.log('CURADENTAI-2630: Designation dropdown save - COMPLETED');
   });
 
 });
@@ -970,6 +1052,7 @@ test.describe('Change Password', () => {
       // Verify page loads
       await expect(page.locator('input[name="currentPassword"], input[type="password"]').first()).toBeVisible({ timeout: 5000 });
     }
+    console.log('CURADENTAI-2631: Change Password page load - COMPLETED');
   });
 
   test('CURADENTAI-2632: Change Password mandatory validation', async ({ page }) => {
@@ -997,6 +1080,7 @@ test.describe('Change Password', () => {
         await expect(page.getByText(/required|mandatory|please enter/i).first()).toBeVisible({ timeout: 5000 });
       }
     }
+    console.log('CURADENTAI-2632: Change Password mandatory validation - COMPLETED');
   });
 
   test('CURADENTAI-2633: Incorrect old password', async ({ page }) => {
@@ -1031,6 +1115,7 @@ test.describe('Change Password', () => {
         await expect(page.getByText(/incorrect|invalid|wrong|old password/i)).toBeVisible({ timeout: 5000 });
       }
     }
+    console.log('CURADENTAI-2633: Incorrect old password - COMPLETED');
   });
 
 
@@ -1057,6 +1142,7 @@ test.describe('Help Center', () => {
       const helpCenterPage = page.locator('[data-testid="help-center"], .help-center, main');
       await expect(helpCenterPage.first()).toBeVisible({ timeout: 5000 });
     }
+    console.log('CURADENTAI-2636: Help Center page load - COMPLETED');
   });
 
   test('CURADENTAI-2637: Help Center mandatory validation', async ({ page }) => {
@@ -1084,6 +1170,7 @@ test.describe('Help Center', () => {
         await expect(page.getByText(/required|mandatory|please enter/i).first()).toBeVisible({ timeout: 5000 });
       }
     }
+    console.log('CURADENTAI-2637: Help Center mandatory validation - COMPLETED');
   });
 
   test('CURADENTAI-2638: Send Help Center message', async ({ page }) => {
@@ -1118,6 +1205,7 @@ test.describe('Help Center', () => {
         await expect(page.getByText(/success|sent|thank you/i)).toBeVisible({ timeout: 5000 });
       }
     }
+    console.log('CURADENTAI-2638: Send Help Center message - COMPLETED');
   });
 
   test('CURADENTAI-2639: Help Center fields reset', async ({ page }) => {
@@ -1157,6 +1245,7 @@ test.describe('Help Center', () => {
         expect(messageValue).toBe('');
       }
     }
+    console.log('CURADENTAI-2639: Help Center fields reset - COMPLETED');
   });
 
 });
@@ -1192,6 +1281,7 @@ test.describe('Logout Flow', () => {
       const confirmationPopup = page.locator('[role="dialog"], .modal, [data-testid="logout-confirmation"]');
       await expect(confirmationPopup.first()).toBeVisible({ timeout: 5000 });
     }
+    console.log('CURADENTAI-2640: Logout confirmation popup - COMPLETED');
   });
 
   test('CURADENTAI-2641: Cancel logout', async ({ page }) => {
@@ -1231,6 +1321,7 @@ test.describe('Logout Flow', () => {
         await expect(page).not.toHaveURL(/\/login$/);
       }
     }
+    console.log('CURADENTAI-2641: Cancel logout - COMPLETED');
   });
 
   test('CURADENTAI-2611: Logout functionality', async ({ page }) => {
@@ -1274,6 +1365,7 @@ test.describe('Logout Flow', () => {
     const emailFieldVisible = await page.locator('input[name="username"]').isVisible({ timeout: 5000 }).catch(() => false);
     const passwordFieldVisible = await page.locator('input[name="password"]').isVisible({ timeout: 2000 }).catch(() => false);
     expect(emailFieldVisible || passwordFieldVisible).toBeTruthy();
+    console.log('CURADENTAI-2611: Logout functionality - COMPLETED');
   });
 
   test('CURADENTAI-2612: Browser back after logout', async ({ page }) => {
@@ -1298,6 +1390,7 @@ test.describe('Logout Flow', () => {
                              await page.locator('input[type="email"]').isVisible({ timeout: 2000 }).catch(() => false) ||
                              await page.getByRole('button', { name: /sign in/i }).isVisible({ timeout: 2000 }).catch(() => false);
     expect(loginFormVisible).toBeTruthy();
+    console.log('CURADENTAI-2612: Browser back after logout - COMPLETED');
   });
 
   test('CURADENTAI-2642: Secured page access after logout', async ({ page }) => {
@@ -1322,6 +1415,7 @@ test.describe('Logout Flow', () => {
                              await page.locator('input[type="email"]').isVisible({ timeout: 2000 }).catch(() => false) ||
                              await page.getByRole('button', { name: /sign in/i }).isVisible({ timeout: 2000 }).catch(() => false);
     expect(loginFormVisible).toBeTruthy();
+    console.log('CURADENTAI-2642: Secured page access after logout - COMPLETED');
   });
 
 });
@@ -1376,6 +1470,7 @@ test.describe.serial('Password Change Flow', () => {
 
     // Wait for password change to be processed
     await page.waitForTimeout(2000);
+    console.log('CURADENTAI-2634: Successful password change - COMPLETED');
   });
 
   test('CURADENTAI-2635: Login with new password', async ({ page }) => {
@@ -1492,6 +1587,7 @@ test.describe.serial('Password Change Flow', () => {
     // Verify success toaster
     await expect(page.getByText(/success|changed|updated/i)).toBeVisible({ timeout: 10000 });
     console.log('Password reset back to original TEST_PASSWORD');
+    console.log('CURADENTAI-2635: Login with new password - COMPLETED');
   });
 
 }); // End of Password Change Flow serial describe block

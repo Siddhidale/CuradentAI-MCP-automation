@@ -11,11 +11,11 @@ import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.BASE_URL || 'https://qa-app.curadent.ai';
 const TEST_EMAIL = process.env.TEST_EMAIL || 'siddhi.dale@mindbowser.com';
-const TEST_PASSWORD = process.env.TEST_PASSWORD || 'Curadent@1234';
-const NEW_TEST_PASSWORD = process.env.NEW_TEST_PASSWORD || 'Siddhidale@123';
+const TEST_PASSWORD = process.env.TEST_PASSWORD || 'Tanvidale@1234';
+const NEW_TEST_PASSWORD = process.env.NEW_TEST_PASSWORD || 'Tanvidale@12345';
 
 // Yopmail email to check for invitation (without @yopmail.com)
-const YOPMAIL_USER = process.env.YOPMAIL_USER || 'sara';
+const YOPMAIL_USER = process.env.YOPMAIL_USER || 'akshay';
 // Expected invitation email details
 // Sender: info_dev@curadent.ai
 // Subject: "You've Been Invited to Join CuradentAI"
@@ -772,70 +772,6 @@ test.describe.serial('First Time Login via Invitation Email', () => {
     }
   });
 
-  // test('CURADENTAI-2433: Reset Password Using Email Link (Yopmail)', async ({ page }) => {
-  //   /**
-  //    * Description: Reset password using link from email (using Yopmail)
-  //    */
-  //   // Generate unique yopmail for reset test
-  //   const resetYopmail = `curadent.reset.${Date.now()}`;
-
-  //   await page.goto(BASE_URL, { timeout: 60000 });
-  //   await page.waitForLoadState('domcontentloaded');
-
-  //   await page.getByText('Forgot Password?').click();
-  //   await page.waitForLoadState('domcontentloaded');
-
-  //   const emailInput = page.locator('input[type="email"], input[name="email"], input[placeholder*="email" i]').first();
-  //   await emailInput.fill(`${resetYopmail}@yopmail.com`);
-
-  //   const resetButton = page.getByRole('button', { name: /reset|request|send/i });
-  //   await resetButton.click();
-  //   await page.waitForTimeout(2000);
-
-  //   // Note: For actual email verification, you would check Yopmail
-  //   // This test verifies the reset request was submitted
-  //   console.log(`Reset link requested for: ${resetYopmail}@yopmail.com`);
-  // });
-
-  // test('CURADENTAI-2434: Expired Reset Password Link', async ({ page }) => {
-  //   /**
-  //    * Description: Verify error for expired reset link
-  //    */
-  //   const expiredLink = `${BASE_URL}/reset-password?token=expired-invalid-token`;
-
-  //   await page.goto(expiredLink, { timeout: 60000 });
-  //   await page.waitForLoadState('domcontentloaded');
-  //   await page.waitForTimeout(2000);
-
-  //   // Should show error or redirect to login
-  //   const currentUrl = page.url();
-  //   const hasError = await page.getByText(/expired|invalid|error|session/i).isVisible({ timeout: 5000 }).catch(() => false);
-
-  //   // Test passes if error shown or redirected
-  //   expect(hasError || currentUrl.includes('login')).toBeTruthy();
-  // });
-
-  // test('CURADENTAI-2435: Reset Password Policy Validation', async ({ page }) => {
-  //   /**
-  //    * Description: Verify password policy on reset page
-  //    */
-  //   await page.goto(BASE_URL, { timeout: 60000 });
-  //   await page.waitForLoadState('domcontentloaded');
-
-  //   const newPasswordField = page.locator('input[name="newPassword"], input[placeholder*="New Password" i]').first();
-
-  //   if (await newPasswordField.isVisible({ timeout: 5000 }).catch(() => false)) {
-  //     await newPasswordField.fill('weak');
-
-  //     const resetButton = page.getByRole('button', { name: /reset|set/i });
-  //     await resetButton.click();
-
-  //     await expect(page.getByText(/character|special|length/i).first()).toBeVisible({ timeout: 5000 });
-  //   } else {
-  //     test.info().annotations.push({ type: 'skip', description: 'Reset password page not accessible' });
-  //   }
-  // });
-
   test('CURADENTAI-2433: Login After Password Reset', async ({ page }) => {
     /**
      * Description: Verify login with new password after reset
@@ -935,22 +871,6 @@ test.describe('Help Center & Email Delivery', () => {
     await expect(successToaster.first()).toBeVisible({ timeout: 10000 });
     console.log('Help Center message sent successfully!');
   });
-
-  // test('CURADENTAI-2435: Reset Password Email Delivery', async ({ page }) => {
-  //   await page.goto(BASE_URL, { timeout: 60000 });
-  //   await page.waitForLoadState('domcontentloaded');
-
-  //   await page.getByText('Forgot Password?').click();
-  //   await page.waitForLoadState('domcontentloaded');
-
-  //   const emailInput = page.locator('input[type="email"], input[name="email"], input[placeholder*="email" i]').first();
-  //   await emailInput.fill(TEST_EMAIL);
-
-  //   const resetButton = page.getByRole('button', { name: /reset|request|send/i });
-  //   await resetButton.click();
-
-  //   await page.waitForTimeout(2000);
-  // });
 
   test('CURADENTAI-2435: Add Patient and Verify Welcome Email', async ({ page }, testInfo) => {
     testInfo.setTimeout(180000); // 3 minutes timeout for complete flow
@@ -1211,83 +1131,4 @@ test.describe('Patient List', () => {
     }
   });
 });
-
-//   test('CURADENTAI-2442: Verify Order After Adding Patient', async ({ page }) => {
-//     await login(page);
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-//   test('CURADENTAI-2447: Verify Order Persistence on Refresh', async ({ page }) => {
-//     await login(page);
-//     await page.reload();
-//     await page.waitForLoadState('domcontentloaded');
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-// });
-
-// // ============================================================================
-// // PATIENT DETAILS PAGE (2448-2458)
-// // ============================================================================
-// test.describe('Patient Details Page', () => {
-
-//   test('CURADENTAI-2443: Smart Prompt Text Updated', async ({ page }) => {
-//     await login(page);
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-//   test('CURADENTAI-2444: Old Smart Prompt Text Removed', async ({ page }) => {
-//     await login(page);
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-//   test('CURADENTAI-2445: Risk Flag Terminology Replaced', async ({ page }) => {
-//     await login(page);
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-//   test('CURADENTAI-2446: Risk Flag Not Shown Elsewhere', async ({ page }) => {
-//     await login(page);
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-//   test('CURADENTAI-2447: Terminology Limited to Section 3', async ({ page }) => {
-//     await login(page);
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-//   test('CURADENTAI-2448: Patient Details Disclaimer Updated', async ({ page }) => {
-//     await login(page);
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-//   test('CURADENTAI-2449: Patient Details Disclaimer Text Accuracy', async ({ page }) => {
-//     await login(page);
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-//   test('CURADENTAI-2450: Patient Details Disclaimer Scope', async ({ page }) => {
-//     await login(page);
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-//   test('CURADENTAI-2451: Other Pages Disclaimer Updated', async ({ page }) => {
-//     await login(page);
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-//   test('CURADENTAI-2452: Exclusion of Patient Details Page', async ({ page }) => {
-//     await login(page);
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-//   test('CURADENTAI-2453: Short Disclaimer Text Accuracy', async ({ page }) => {
-//     await login(page);
-//     await expect(page).not.toHaveURL(/\/login$/);
-//   });
-
-
-// });
-
-
 
