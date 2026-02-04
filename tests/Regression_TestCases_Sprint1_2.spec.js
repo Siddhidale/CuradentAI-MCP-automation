@@ -11,8 +11,8 @@ const BASE_URL = process.env.BASE_URL || 'https://qa-app.curadent.ai';
 
 // Test credentials - should be configured in .env file
 const TEST_EMAIL = process.env.TEST_EMAIL || 'siddhi.dale@mindbowser.com';
-const TEST_PASSWORD = process.env.TEST_PASSWORD || 'Tanvidale@123';
-const NEW_TEST_PASSWORD = process.env.NEW_TEST_PASSWORD || 'Tanvidale@1234';
+const TEST_PASSWORD = process.env.TEST_PASSWORD || 'Test@123456';
+const NEW_TEST_PASSWORD = process.env.NEW_TEST_PASSWORD || 'Curadent@26';
 
 // Helper function to login
 async function login(page) {

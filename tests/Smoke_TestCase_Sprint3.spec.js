@@ -11,11 +11,11 @@ import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.BASE_URL || 'https://qa-app.curadent.ai';
 const TEST_EMAIL = process.env.TEST_EMAIL || 'siddhi.dale@mindbowser.com';
-const TEST_PASSWORD = process.env.TEST_PASSWORD || 'Tanvidale@1234';
-const NEW_TEST_PASSWORD = process.env.NEW_TEST_PASSWORD || 'Tanvidale@12345';
+const TEST_PASSWORD = process.env.TEST_PASSWORD || 'Curadent@26';
+const NEW_TEST_PASSWORD = process.env.NEW_TEST_PASSWORD || 'Curadent@2026';
 
 // Yopmail email to check for invitation (without @yopmail.com)
-const YOPMAIL_USER = process.env.YOPMAIL_USER || 'akshay';
+const YOPMAIL_USER = process.env.YOPMAIL_USER || 'kelvin';
 // Expected invitation email details
 // Sender: info_dev@curadent.ai
 // Subject: "You've Been Invited to Join CuradentAI"
