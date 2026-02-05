@@ -1,0 +1,83 @@
+name: QA Smoke Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        type: choice
+        options: [dev, qa]
+  push:
+    branches: [main, develop]
+
+jobs:
+  smoke-tests:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    env:
+      ENV: ${{ github.event.inputs.environment || 'qa' }}
+
+    steps:
+      - name: Checkout QA Automation Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npx playwright install chromium --with-deps
+
+      # -------------------------------------------------------
+      # RUN TESTS (Independent execution & unique report paths)
+      # -------------------------------------------------------
+      - name: Run Regression Tests (Sprint 1-2)
+        run: |
+          npx playwright test tests/Regression_TestCases_Sprint1_2.spec.js --reporter=html
+        env:
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report-regression
+
+      - name: Run Smoke Tests (Sprint 3)
+        run: |
+          npx playwright test tests/Smoke_TestCase_Sprint3.spec.js --reporter=html
+        env:
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report-smoke
+
+      - name: Run Functional Tests (Sprint 3)
+        run: |
+          npx playwright test tests/Functional_TestCase_Sprint3.spec.js --reporter=html
+        env:
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report-functional
+
+      # -------------------------------------------------------
+      # UPLOAD SEPARATE ARTIFACTS
+      # -------------------------------------------------------
+      - name: Upload Regression Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Regression-Report
+          path: playwright-report-regression/
+          retention-days: 14
+
+      - name: Upload Smoke Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Smoke-Report
+          path: playwright-report-smoke/
+          retention-days: 14
+
+      - name: Upload Functional Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Functional-Report
+          path: playwright-report-functional/
+          retention-days: 14
