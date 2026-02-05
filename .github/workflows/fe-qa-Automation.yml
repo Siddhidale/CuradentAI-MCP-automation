@@ -1,4 +1,4 @@
-name: QA Smoke Tests
+name: fe-qa-automation
 
 on:
   workflow_dispatch:
@@ -8,8 +8,6 @@ on:
         required: true
         type: choice
         options: [dev, qa]
-  push:
-    branches: [main, develop]
 
 jobs:
   smoke-tests:
@@ -17,7 +15,7 @@ jobs:
     continue-on-error: true
 
     env:
-      ENV: ${{ github.event.inputs.environment || 'qa' }}
+      ENV: ${{ github.event.inputs.environment }}
 
     steps:
       - name: Checkout QA Automation Repo
