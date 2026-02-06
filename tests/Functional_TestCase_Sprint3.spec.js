@@ -13,7 +13,7 @@ const TEST_PASSWORD = process.env.TEST_PASSWORD || 'Curadent@2026';
 const NEW_TEST_PASSWORD = process.env.NEW_TEST_PASSWORD || 'SidDale@08';
 
 // Yopmail email to check for invitation (without @yopmail.com)
-const YOPMAIL_USER = process.env.YOPMAIL_USER || 'davidcooper';
+const YOPMAIL_USER = process.env.YOPMAIL_USER || 'linda';
 
 // Store recently created patient details for use across tests
 let recentlyCreatedPatient = {

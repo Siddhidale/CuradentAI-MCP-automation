@@ -15,7 +15,7 @@ const TEST_PASSWORD = process.env.TEST_PASSWORD || 'Curadent@26';
 const NEW_TEST_PASSWORD = process.env.NEW_TEST_PASSWORD || 'Curadent@2026';
 
 // Yopmail email to check for invitation (without @yopmail.com)
-const YOPMAIL_USER = process.env.YOPMAIL_USER || 'kelvin';
+const YOPMAIL_USER = process.env.YOPMAIL_USER || 'patricia';
 // Expected invitation email details
 // Sender: info_dev@curadent.ai
 // Subject: "You've Been Invited to Join CuradentAI"
