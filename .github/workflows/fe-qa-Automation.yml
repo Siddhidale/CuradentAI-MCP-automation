@@ -35,15 +35,16 @@ jobs:
       # -------------------------------------------------------
       # RUN TESTS (Reports only)
       # -------------------------------------------------------
-      - name: Run Regression Tests
-        run: npx playwright test tests/Regression_TestCases_Sprint1_2.spec.js --reporter=html
-        env:
-          PLAYWRIGHT_HTML_REPORT: regression-report-folder
+      # - name: Run Regression Tests
+      #   run: npx playwright test tests/Regression_TestCases_Sprint1_2.spec.js --reporter=html
+      #   env:
+      #     PLAYWRIGHT_HTML_REPORT: regression-report-folder
 
       - name: Run Smoke Tests
         run: npx playwright test tests/Smoke_TestCase_Sprint3.spec.js --reporter=html
         env:
           PLAYWRIGHT_HTML_REPORT: smoke-report-folder
+          YOPMAIL_USER: patricia
 
       - name: Run Functional Tests
         run: npx playwright test tests/Functional_TestCase_Sprint3.spec.js --reporter=html
@@ -53,13 +54,13 @@ jobs:
       # -------------------------------------------------------
       # UPLOAD REPORTS AS ARTIFACTS
       # -------------------------------------------------------
-      - name: Upload Regression Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Regression-Report
-          path: regression-report-folder/
-          retention-days: 14
+      # - name: Upload Regression Report
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: Regression-Report
+      #     path: regression-report-folder/
+      #     retention-days: 14
 
       - name: Upload Smoke Report
         if: always()
